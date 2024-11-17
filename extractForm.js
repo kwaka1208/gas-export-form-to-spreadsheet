@@ -1,19 +1,4 @@
-const panelSheetName = 'パネル'
-
-const COLUMN_NAME = ['No.','グループ名','No.','入力方法','必須','設問内容','説明','No.','選択肢・入力範囲','分岐','検証タイプ','条件','パラメータ1','パラメータ２','表示形式']
-const COLUMN_INDEX = ['GNO','GNAME','QNO','METHOD','REQ','QCONTENT','DESCRIPTION','INO','RANGE','BRANCH','VTYPE','CONDITION','P1','P2','DISPLAY']
-const COLUMN_MAPPING = {
-  QUESTION_CONTENT:   COLUMN_INDEX.indexOf('QCONTENT'),
-  DESCRIPTION:        COLUMN_INDEX.indexOf('DESCRIPTION'),
-  REQUIRED:           COLUMN_INDEX.indexOf('REQ'),
-  INPUT_METHOD:       COLUMN_INDEX.indexOf('METHOD'),
-  RANGE:              COLUMN_INDEX.indexOf('RANGE'),
-  ADDITIONAL_INFO:    COLUMN_INDEX.indexOf('VTYPE'),
-  BRANCH_INFO:        COLUMN_INDEX.indexOf('BRANCH'),
-  VALIDATION_INFO:    COLUMN_INDEX.indexOf('VTYPE'),
-};
-
-function exportForm(formUrl, spreadsheetUrl, sheetName) {
+function extractForm(formUrl, spreadsheetUrl, sheetName) {
   const form = FormApp.openByUrl(formUrl);
   const items = form.getItems();
 
@@ -72,7 +57,6 @@ function exportForm(formUrl, spreadsheetUrl, sheetName) {
     let columnInfo = [];
     let rowInfo = [];
     let additionalInfo = '';
-    let branchInfo = '';
 
     switch (type) {
       case FormApp.ItemType.TEXT:
@@ -132,11 +116,9 @@ function exportForm(formUrl, spreadsheetUrl, sheetName) {
         break;
       case FormApp.ItemType.IMAGE:
         inputMethod = 'イメージ';
-        additionalInfo = item.getImageAlignment();
         break;
       case FormApp.ItemType.VIDEO:
         inputMethod = 'ビデオ';
-        additionalInfo = item.getVideoTitle();
         break;
       case FormApp.ItemType.DATE_TIME:
         inputMethod = '日付と時刻';
@@ -150,12 +132,11 @@ function exportForm(formUrl, spreadsheetUrl, sheetName) {
 
     // 設問、説明、必須情報、入力方法、追加情報、分岐情報、検証情報を出力
     row = Array(COLUMN_INDEX.length);
-    row[COLUMN_MAPPING.QUESTION_CONTENT]  = title;
+    row[COLUMN_MAPPING.QUESTION_TITLE]    = title;
     row[COLUMN_MAPPING.DESCRIPTION]       = helpText;
     row[COLUMN_MAPPING.REQUIRED]          = isRequired;
     row[COLUMN_MAPPING.INPUT_METHOD]      = inputMethod;
     row[COLUMN_MAPPING.ADDITIONAL_INFO]   = additionalInfo;
-    row[COLUMN_MAPPING.BRANCH_INFO]       = branchInfo;
     sheet.appendRow(row);
 
     row = Array(COLUMN_INDEX.length);
@@ -254,7 +235,7 @@ function isRequiredForItem(item) {
   return result ? 'Y' : '';
 }
 
-function exportFromSheetData() {
+function mainExtractForm() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(panelSheetName);
   const formUrl = sheet.getRange('C2').getValue();
   const spreadsheetUrl = sheet.getRange('C3').getValue();
@@ -266,7 +247,7 @@ function exportFromSheetData() {
   }
 
   if (formUrl && sheetName) {
-    exportForm(formUrl, spreadsheetUrl, sheetName);
+    extractForm(formUrl, spreadsheetUrl, sheetName);
   } else {
     SpreadsheetApp.getUi().alert('フォームURLとシート名を正しく入力してください。');
   }
