@@ -57,35 +57,35 @@ function extractForm(formUrl, spreadsheetUrl, sheetName) {
     let columnInfo = [];
     let rowInfo = [];
     let additionalInfo = '';
+    let otherOption = false;
+
+    /*
+      Formのタイプから名前を取得
+    */
+    var element = FormItems.find(element => element.type === type);
+    inputMethod = element ? element.name : "Unknown";
 
     switch (type) {
-      case FormApp.ItemType.TEXT:
-        inputMethod = 'テキスト';
-        break;
-      case FormApp.ItemType.PARAGRAPH_TEXT:
-        inputMethod = '段落テキスト';
-        break;
       case FormApp.ItemType.MULTIPLE_CHOICE:
-        inputMethod = 'ラジオボタン';
         choices = item.asMultipleChoiceItem().getChoices().map(choice => {
           return choice.getValue();
         });
+        if (item.asMultipleChoiceItem().hasOtherOption()) {
+          choices.push(OTHER_OPTION)
+        }
         break;
       case FormApp.ItemType.CHECKBOX:
-        inputMethod = 'チェックボックス';
         choices = item.asCheckboxItem().getChoices().map(choice => {
           return choice.getValue();
         });
+        if (item.asCheckboxItem().hasOtherOption()) {
+          choices.push(OTHER_OPTION)
+        }
         break;
       case FormApp.ItemType.LIST:
-        inputMethod = 'プルダウン';
         choices = item.asListItem().getChoices().map(choice => choice.getValue());
         break;
-      case FormApp.ItemType.FILE_UPLOAD:
-        inputMethod = 'ファイルアップロード';
-        break;
       case FormApp.ItemType.SCALE:
-        inputMethod = '均等目盛';
         const lowerBound = item.asScaleItem().getLowerBound();
         const upperBound = item.asScaleItem().getUpperBound();
         const leftLabel = item.asScaleItem().getLeftLabel(); 
@@ -93,41 +93,29 @@ function extractForm(formUrl, spreadsheetUrl, sheetName) {
         range = `${leftLabel ? leftLabel : '最小値のラベルなし'}：${lowerBound}, ${rightLabel ? rightLabel : '最大値のラベルなし'}：${upperBound}`;
         break;
       case FormApp.ItemType.GRID:
-        inputMethod = '選択式グリッド形式';
         columnInfo = item.asGridItem().getColumns();
         rowInfo = item.asGridItem().getRows();
         break;
       case FormApp.ItemType.CHECKBOX_GRID:
-        inputMethod = 'チェックボックスグリッド形式';
         columnInfo = item.asCheckboxGridItem().getColumns();
         rowInfo = item.asCheckboxGridItem().getRows();
         break;
-      case FormApp.ItemType.DATE:
-        inputMethod = '日付';
-        break;
-      case FormApp.ItemType.TIME:
-        inputMethod = '時刻';
-        break;
-      case FormApp.ItemType.SECTION_HEADER:
-        inputMethod = 'セクションヘッダー';
-        break;
-      case FormApp.ItemType.PAGE_BREAK:
-        inputMethod = 'セクション';
-        break;
-      case FormApp.ItemType.IMAGE:
-        inputMethod = 'イメージ';
-        break;
-      case FormApp.ItemType.VIDEO:
-        inputMethod = 'ビデオ';
-        break;
-      case FormApp.ItemType.DATE_TIME:
-        inputMethod = '日付と時刻';
-        break;
-      case FormApp.ItemType.DURATION:
-        inputMethod = '期間';
-        break;
+      /*
+        以下は名前ののみなので処理の必要なし
+      */
+      // case FormApp.ItemType.TEXT:
+      // case FormApp.ItemType.PARAGRAPH_TEXT:
+      // case FormApp.ItemType.FILE_UPLOAD:
+      // case FormApp.ItemType.DATE:
+      // case FormApp.ItemType.TIME:
+      // case FormApp.ItemType.SECTION_HEADER:
+      // case FormApp.ItemType.PAGE_BREAK:
+      // case FormApp.ItemType.IMAGE:
+      // case FormApp.ItemType.VIDEO:
+      // case FormApp.ItemType.DATE_TIME:
+      // case FormApp.ItemType.DURATION:
       default:
-        inputMethod = 'その他';
+        break;
     }
 
     // 設問、説明、必須情報、入力方法、追加情報、分岐情報、検証情報を出力
@@ -147,8 +135,6 @@ function extractForm(formUrl, spreadsheetUrl, sheetName) {
     // グリッド形式の列情報と行情報を縦方向に追加
     if (rowInfo.length > 0) {
       row = Array(COLUMN_INDEX.length);
-      row[COLUMN_MAPPING.RANGE]             = '[項目]';
-      sheet.appendRow(row);
       rowInfo.forEach((row) => {
         let gridRow = [];
         gridRow[COLUMN_MAPPING.RANGE] = row;
@@ -157,7 +143,7 @@ function extractForm(formUrl, spreadsheetUrl, sheetName) {
     }
     if (columnInfo.length > 0) {
       row = Array(COLUMN_INDEX.length);
-      row[COLUMN_MAPPING.RANGE]             = '[選択肢]';
+      row[COLUMN_MAPPING.RANGE]             = '---';
       sheet.appendRow(row);
       columnInfo.forEach((column) => {
         let gridColumn = [];

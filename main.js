@@ -40,3 +40,64 @@ function onOpen() {
       .addToUi();
   }
   
+
+  const FormItems = [
+    {
+      "type": FormApp.ItemType.TEXT, 
+      "name": "テキスト", 
+    },
+    {
+      "type": FormApp.ItemType.PARAGRAPH_TEXT, 
+      "name": "段落テキスト", 
+    },
+    {
+      "type": FormApp.ItemType.MULTIPLE_CHOICE, 
+      "name": "ラジオボタン", 
+    },
+    {
+      "type": FormApp.ItemType.CHECKBOX, 
+      "name": "チェックボックス", 
+    },
+    {
+      "type": FormApp.ItemType.LIST, 
+      "name": "プルダウン", 
+    },
+    {
+      "type": FormApp.ItemType.FILE_UPLOAD, 
+      "name": "ファイルアップロード", 
+    },
+    {
+      "type": FormApp.ItemType.SCALE, 
+      "name": "均等目盛", 
+    },
+    {
+      "type": FormApp.ItemType.GRID, 
+      "name": "選択式グリッド", 
+    },
+    {
+      "type": FormApp.ItemType.CHECKBOX_GRID, 
+      "name": "チェックボックスグリッド", 
+    },
+    {
+      "type": FormApp.ItemType.DATE, 
+      "name": "日付", 
+    },
+    {
+      "type": FormApp.ItemType.TIME, 
+      "name": "時刻", 
+    },
+    {
+      "type": FormApp.ItemType.DATE_TIME, 
+      "name": "日付時刻", 
+    },
+    {
+      "type": FormApp.ItemType.PAGE_BREAK, 
+      "name": "セクション", 
+    },
+    {
+      "type": FormApp.ItemType.SECTION_HEADER, 
+      "name": "タイトルと説明", 
+    },
+  ]
+
+const OTHER_OPTION = '-- OTHER --'
