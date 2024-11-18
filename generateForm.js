@@ -84,7 +84,7 @@ function generateForm() {
           item = form.addDateTimeItem();
           item.setTitle(questionText);
           break;
-        case 'セクションヘッダー':
+        case 'セクション':
           item = form.addSectionHeaderItem();
           item.setTitle(questionText);
           break;
