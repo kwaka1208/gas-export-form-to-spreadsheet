@@ -206,6 +206,10 @@ if (!sheet) {
         item = form.addVideoItem();
         item.setTitle(title);
         break;
+      case FormItems.FORM_TITLE.name:
+        // フォーム説明
+        form.setTitle(title);
+        break;
       case FormItems.FORM_DESCRIPTION.name:
         // フォーム説明
         form.setDescription(title);

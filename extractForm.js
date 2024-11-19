@@ -2,10 +2,6 @@ function extractForm(formUrl, spreadsheetUrl, sheetName) {
   const form = FormApp.openByUrl(formUrl);
   const items = form.getItems();
 
-  // フォームのタイトルと説明を取得
-  const formTitle = form.getTitle();
-  const formDescription = form.getDescription();
-
   // スプレッドシートを開く
   let spreadsheet;
   if (spreadsheetUrl) {
@@ -34,14 +30,17 @@ function extractForm(formUrl, spreadsheetUrl, sheetName) {
   sheet.appendRow(COLUMN_NAME);
   sheet.appendRow(COLUMN_INDEX);
 
+  // フォームのタイトルと説明を取得
+  const formTitle = form.getTitle();
+  const formDescription = form.getDescription();
   // フォームのタイトルと説明をスプレッドシートに追加
   row = Array(COLUMN_INDEX.length)
-  row[COLUMN_MAPPING.QUESTION_CONTENT] = formTitle;
+  row[COLUMN_MAPPING.QUESTION_TITLE] = formTitle;
   row[COLUMN_MAPPING.INPUT_METHOD] = FormItems.FORM_TITLE.name;
   sheet.appendRow(row);
 
   row = Array(COLUMN_INDEX.length);
-  row[COLUMN_MAPPING.QUESTION_CONTENT] = formDescription;
+  row[COLUMN_MAPPING.QUESTION_TITLE] = formDescription;
   row[COLUMN_MAPPING.INPUT_METHOD] = FormItems.FORM_DESCRIPTION.name;
   sheet.appendRow(row);
 
