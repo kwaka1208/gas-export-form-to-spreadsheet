@@ -41,6 +41,7 @@ if (!sheet) {
     let rowInfo = [];
 
     if (method == '') continue;
+    Logger.log(`処理対象の入力方法: ${method}`);
     switch (method) {
       case FormItems.TEXT.name:
         // テキスト
@@ -59,7 +60,8 @@ if (!sheet) {
         item = form.addMultipleChoiceItem();
         item.setTitle(title);
         item.setHelpText(description);
-        for (i++; data[i][COLUMN_MAPPING.INPUT_METHOD] == ''; i++) {
+        while(data[i+1][COLUMN_MAPPING.INPUT_METHOD] == '') {
+          i++;
           var choice = data[i][COLUMN_MAPPING.RANGE];
           if (choice.startsWith(PREFIX_TAG)){
             if(choice.includes(tags.OTHER_OPTION)) {
@@ -77,7 +79,8 @@ if (!sheet) {
         item = form.addCheckboxItem();
         item.setTitle(title);
         item.setHelpText(description);
-        for (i++; data[i][COLUMN_MAPPING.INPUT_METHOD] == ''; i++) {
+        while(data[i+1][COLUMN_MAPPING.INPUT_METHOD] == '') {
+          i++;
           console.log(i)
           var choice = data[i][COLUMN_MAPPING.RANGE];
           if (choice.startsWith(PREFIX_TAG)){
@@ -96,7 +99,8 @@ if (!sheet) {
         item = form.addListItem();
         item.setTitle(title);
         item.setHelpText(description);
-        for (i++; data[i][COLUMN_MAPPING.INPUT_METHOD] == ''; i++) {
+        while(data[i+1][COLUMN_MAPPING.INPUT_METHOD] == '') {
+          i++;
           var choice = data[i][COLUMN_MAPPING.RANGE];
           choices.push(choice);
         }
@@ -121,7 +125,8 @@ if (!sheet) {
         item.setTitle(title);
         item.setHelpText(description);
         var fGrid = true
-        for (i++; data[i][COLUMN_MAPPING.INPUT_METHOD] == ''; i++) {
+        while(data[i+1][COLUMN_MAPPING.INPUT_METHOD] == '') {
+          i++;
           var choice = data[i][COLUMN_MAPPING.RANGE];
           if(choice.includes(tags.GRID_ROW)) {
             fGrid = true
@@ -146,7 +151,8 @@ if (!sheet) {
         item.setTitle(title);
         item.setHelpText(description);
         var fGrid = true
-        for (i++; data[i][COLUMN_MAPPING.INPUT_METHOD] == ''; i++) {
+        while(data[i+1][COLUMN_MAPPING.INPUT_METHOD] == '') {
+          i++;
           var choice = data[i][COLUMN_MAPPING.RANGE];
           if(choice.includes(tags.GRID_ROW)) {
             fGrid = true
