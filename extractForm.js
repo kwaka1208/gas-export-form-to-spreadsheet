@@ -131,7 +131,7 @@ function extractForm(formUrl, spreadsheetUrl, sheetName) {
     // グリッド形式の列情報と行情報を縦方向に追加
     if (rowInfo.length > 0) {
       row = Array(COLUMN_INDEX.length);
-      row[COLUMN_MAPPING.RANGE]             = 'tag:' + tags.GRID_ITEM;
+      row[COLUMN_MAPPING.RANGE]             = 'tag:' + tags.GRID_ROW;
       sheet.appendRow(row);
       rowInfo.forEach((row) => {
         let gridRow = [];
@@ -141,7 +141,7 @@ function extractForm(formUrl, spreadsheetUrl, sheetName) {
     }
     if (columnInfo.length > 0) {
       row = Array(COLUMN_INDEX.length);
-      row[COLUMN_MAPPING.RANGE]             = 'tag:' + tags.GRID_OPTION;
+      row[COLUMN_MAPPING.RANGE]             = 'tag:' + tags.GRID_COLUMN;
       sheet.appendRow(row);
       columnInfo.forEach((column) => {
         let gridColumn = [];

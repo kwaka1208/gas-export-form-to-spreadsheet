@@ -104,10 +104,11 @@ const COLUMN_MAPPING = Object.fromEntries(
     },
   }
 
+const PREFIX_TAG = 'tag:'
 const tags = {
   "OTHER_OPTION": "+OTHER",
-  "GRID_ITEM": "GRID_ITEM",
-  "GRID_OPTION": "GRID_OPTION",
+  "GRID_ROW": "GRID_ROW",
+  "GRID_COLUMN": "GRID_COLUMN",
 }
 
 function GetNameByType(_type) {

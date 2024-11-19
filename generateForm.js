@@ -40,6 +40,7 @@ if (!sheet) {
     let columnInfo = [];
     let rowInfo = [];
 
+    if (method == '') continue;
     switch (method) {
       case FormItems.TEXT.name:
         // テキスト
@@ -60,7 +61,13 @@ if (!sheet) {
         item.setHelpText(description);
         for (i++; data[i][COLUMN_MAPPING.INPUT_METHOD] == ''; i++) {
           var choice = data[i][COLUMN_MAPPING.RANGE];
-          choice === tags.OTHER_OPTION ? item.showOtherOption(true) : choices.push(choice);
+          if (choice.startsWith(PREFIX_TAG)){
+            if(choice.includes(tags.OTHER_OPTION)) {
+              item.showOtherOption(true)
+            }
+          } else {
+            choices.push(choice)
+          }
         }
         console.log(choices)
         item.setChoices(choices.map(option => item.createChoice(option)));
@@ -73,8 +80,13 @@ if (!sheet) {
         for (i++; data[i][COLUMN_MAPPING.INPUT_METHOD] == ''; i++) {
           console.log(i)
           var choice = data[i][COLUMN_MAPPING.RANGE];
-          console.log(choice)
-          choice === tags.OTHER_OPTION ? item.showOtherOption(true) : choices.push(choice);
+          if (choice.startsWith(PREFIX_TAG)){
+            if(choice.includes(tags.OTHER_OPTION)) {
+              item.showOtherOption(true)
+            }
+          } else {
+            choices.push(choice)
+          }
         }
         console.log(choices)
         item.setChoices(choices.map(option => item.createChoice(option)));
@@ -108,12 +120,50 @@ if (!sheet) {
         item = form.addGridItem();
         item.setTitle(title);
         item.setHelpText(description);
+        var fGrid = true
+        for (i++; data[i][COLUMN_MAPPING.INPUT_METHOD] == ''; i++) {
+          var choice = data[i][COLUMN_MAPPING.RANGE];
+          if(choice.includes(tags.GRID_ROW)) {
+            fGrid = true
+            continue;
+          }
+          if(choice.includes(tags.GRID_COLUMN)) {
+            fGrid = false
+            continue
+          } 
+          if(fGrid) {
+            rowInfo.push(choice)
+          } else {
+            columnInfo.push(choice)
+          }
+        }
+        item.setRows(rowInfo);
+        item.setColumns(columnInfo);
         break;
       case FormItems.CHECKBOX_GRID.name:
         // チェックボックスグリッド
         item = form.addCheckboxItem();
         item.setTitle(title);
         item.setHelpText(description);
+        var fGrid = true
+        for (i++; data[i][COLUMN_MAPPING.INPUT_METHOD] == ''; i++) {
+          var choice = data[i][COLUMN_MAPPING.RANGE];
+          if(choice.includes(tags.GRID_ROW)) {
+            fGrid = true
+            continue;
+          }
+          if(choice.includes(tags.GRID_COLUMN)) {
+            fGrid = false
+            continue
+          } 
+          if(fGrid) {
+            rowInfo.push(choice)
+          } else {
+            columnInfo.push(choice)
+          }
+        }
+        item.setRows(rowInfo);
+        item.setColumns(columnInfo);
         break;
 
       case FormItems.DATE.name:
@@ -176,6 +226,6 @@ if (!sheet) {
 function mainGenerateForm() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(panelSheetName);
   const spreadsheetUrl = sheet.getRange('C3').getValue();
-  const sheetName = sheet.getRange('C4').getValue();
+  const sheetName = sheet.getRange('C5').getValue();
   generateForm(spreadsheetUrl, sheetName);
 }
