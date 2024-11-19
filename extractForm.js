@@ -37,12 +37,12 @@ function extractForm(formUrl, spreadsheetUrl, sheetName) {
   // フォームのタイトルと説明をスプレッドシートに追加
   row = Array(COLUMN_INDEX.length)
   row[COLUMN_MAPPING.QUESTION_CONTENT] = formTitle;
-  row[COLUMN_MAPPING.INPUT_METHOD] = 'フォームタイトル';
+  row[COLUMN_MAPPING.INPUT_METHOD] = FormItems.FORM_TITLE.name;
   sheet.appendRow(row);
 
   row = Array(COLUMN_INDEX.length);
   row[COLUMN_MAPPING.QUESTION_CONTENT] = formDescription;
-  row[COLUMN_MAPPING.INPUT_METHOD] = 'フォーム説明';
+  row[COLUMN_MAPPING.INPUT_METHOD] = FormItems.FORM_DESCRIPTION.name;
   sheet.appendRow(row);
 
   let currentSectionTitle = '';
@@ -56,14 +56,11 @@ function extractForm(formUrl, spreadsheetUrl, sheetName) {
     let inputMethod = '';
     let columnInfo = [];
     let rowInfo = [];
-    let additionalInfo = '';
-    let otherOption = false;
 
     /*
       Formのタイプから名前を取得
     */
-    var element = FormItems.find(element => element.type === type);
-    inputMethod = element ? element.name : "Unknown";
+    inputMethod = GetNameByType(type)
 
     switch (type) {
       case FormApp.ItemType.MULTIPLE_CHOICE:
@@ -71,7 +68,7 @@ function extractForm(formUrl, spreadsheetUrl, sheetName) {
           return choice.getValue();
         });
         if (item.asMultipleChoiceItem().hasOtherOption()) {
-          choices.push(OTHER_OPTION)
+          choices.push('tag:' + tags.OTHER_OPTION)
         }
         break;
       case FormApp.ItemType.CHECKBOX:
@@ -79,7 +76,7 @@ function extractForm(formUrl, spreadsheetUrl, sheetName) {
           return choice.getValue();
         });
         if (item.asCheckboxItem().hasOtherOption()) {
-          choices.push(OTHER_OPTION)
+          choices.push('tag:' + tags.OTHER_OPTION)
         }
         break;
       case FormApp.ItemType.LIST:
@@ -124,7 +121,6 @@ function extractForm(formUrl, spreadsheetUrl, sheetName) {
     row[COLUMN_MAPPING.DESCRIPTION]       = helpText;
     row[COLUMN_MAPPING.REQUIRED]          = isRequired;
     row[COLUMN_MAPPING.INPUT_METHOD]      = inputMethod;
-    row[COLUMN_MAPPING.ADDITIONAL_INFO]   = additionalInfo;
     sheet.appendRow(row);
 
     row = Array(COLUMN_INDEX.length);
@@ -135,6 +131,8 @@ function extractForm(formUrl, spreadsheetUrl, sheetName) {
     // グリッド形式の列情報と行情報を縦方向に追加
     if (rowInfo.length > 0) {
       row = Array(COLUMN_INDEX.length);
+      row[COLUMN_MAPPING.RANGE]             = 'tag:' + tags.GRID_ITEM;
+      sheet.appendRow(row);
       rowInfo.forEach((row) => {
         let gridRow = [];
         gridRow[COLUMN_MAPPING.RANGE] = row;
@@ -143,7 +141,7 @@ function extractForm(formUrl, spreadsheetUrl, sheetName) {
     }
     if (columnInfo.length > 0) {
       row = Array(COLUMN_INDEX.length);
-      row[COLUMN_MAPPING.RANGE]             = '---';
+      row[COLUMN_MAPPING.RANGE]             = 'tag:' + tags.GRID_OPTION;
       sheet.appendRow(row);
       columnInfo.forEach((column) => {
         let gridColumn = [];
